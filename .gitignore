@@ -1,0 +1,29 @@
+# .NET / C#
+bin/
+obj/
+*.user
+*.suo
+*.vs/
+.vs/
+*.log
+*.tmp
+
+# Arquivos de build
+*.dll
+*.exe
+*.pdb
+*.cache
+
+# IDEs
+.idea/
+.vscode/
+*.DotSettings
+
+# NuGet
+*.nupkg
+packages/
+project.lock.json
+
+# OS
+.DS_Store
+Thumbs.db
