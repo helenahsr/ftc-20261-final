@@ -40,3 +40,49 @@ bool Aceitar(string cadeia, out List<string> rastro)
 
     return F.Contains(estado);
 }
+
+void ExibirDiagrama()
+{
+    Console.WriteLine("\nTabela de Transições (δ): \n");
+    Console.WriteLine("Estado   | 'a'      | 'b'");
+    Console.WriteLine("------------------------------");
+
+    foreach (string estado in Q)
+    {
+        string destinoA;
+        string destinoB;
+
+        if (delta.ContainsKey((estado, 'a')))
+        {
+            destinoA = delta[(estado, 'a')];
+        }
+        else
+        {
+            destinoA = "-";
+        }
+
+        if (delta.ContainsKey((estado, 'b')))
+        {
+            destinoB = delta[(estado, 'b')];
+        }
+        else
+        {
+            destinoB = "-";
+        }
+
+        string marca = " ";
+
+        if (F.Contains(estado))
+        {
+            marca = "*";
+        }
+        else if (estado == q0)
+        {
+            marca = ">";
+        }
+
+        Console.WriteLine(marca + estado + "      | " + destinoA + "      | " + destinoB);
+    }
+
+    Console.WriteLine("(* = aceitação, > = inicial) \n");   
+}
