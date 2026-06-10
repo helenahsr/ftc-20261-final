@@ -84,5 +84,13 @@ void ExibirDiagrama()
         Console.WriteLine(marca + estado + "      | " + destinoA + "      | " + destinoB);
     }
 
-    Console.WriteLine("(* = aceitação, > = inicial) \n");   
+    Console.WriteLine("(* = aceitação, > = inicial) \n");
 }
+
+Console.WriteLine("Simulador de AFD");
+Console.WriteLine("L1 = cadeias sobre {a,b} que terminam com 'ab'");
+
+ExibirDiagrama();
+
+Console.WriteLine("Pressione qualquer tecla para sair...");
+Console.ReadKey();
