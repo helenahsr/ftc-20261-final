@@ -1,36 +1,15 @@
-// =============================================================================
-// AutomatoDePilha.cs  (.NET 8 / C# 12)
-// Implementação genérica de um Autômato de Pilha (AP) não-determinístico
-// com reconhecimento por PILHA VAZIA (não por estado final).
-//
-// Definição formal:  AP = (Q, Σ, Γ, δ, q0, Z0, ∅)
-//   Q   — conjunto finito de estados
-//   Σ   — alfabeto de entrada
-//   Γ   — alfabeto da pilha
-//   δ   — Q × (Σ ∪ {ε}) × Γ  →  P(Q × Γ*)   (transição)
-//   q0  — estado inicial
-//   Z0  — símbolo inicial da pilha
-//   ∅   — conjunto vazio de estados de aceitação (aceitação por pilha vazia)
-// =============================================================================
 
-// ImplicitUsings habilitado no .csproj — System, Collections.Generic e Linq
-// já estão disponíveis globalmente; os using abaixo são mantidos apenas para
-// fins didáticos/documentais.
 using System.Collections.Frozen;
 
 namespace AutomatoDePilha;
 
-// -----------------------------------------------------------------------------
-// Configuração instantânea da computação: (estado, entrada_restante, pilha)
-// Usa record posicional (C# 9+) — imutável por padrão, com ToString() gerado.
-// -----------------------------------------------------------------------------
+
 public sealed record Configuracao(string Estado, string EntradaRestante, Stack<char> Pilha)
 {
     /// <summary>Clona a pilha para evitar efeitos colaterais entre ramos não-det.</summary>
     public Stack<char> ClonaPilha()
     {
-        // ToArray() devolve os elementos com o topo primeiro; precisamos
-        // reinserir de trás para frente para preservar a ordem topo→base.
+       
         char[] arr = Pilha.ToArray();
         Stack<char> nova = new(arr.Length);
         for (int i = arr.Length - 1; i >= 0; i--)
@@ -39,23 +18,19 @@ public sealed record Configuracao(string Estado, string EntradaRestante, Stack<c
     }
 
     public string PilhaParaString() =>
-        Pilha.Count == 0 ? "∅ (vazia)" : string.Concat(Pilha); // string.Concat<T> (.NET 8)
+        Pilha.Count == 0 ? "∅ (vazia)" : string.Concat(Pilha); 
 }
 
-// Chave de transição: δ(estado, símbolo, topo_da_pilha)
-// '\0' no campo Simbolo representa λ-movimento (transição ε).
+
 public readonly record struct ChaveTransicao(string Estado, char Simbolo, char TopoPilha);
 
-// Destino de transição: (novo_estado, cadeia_a_empilhar)
-// EmpilharCadeia == "" representa pop sem push.
+
 public readonly record struct DestinoTransicao(string NovoEstado, string EmpilharCadeia);
 
-// -----------------------------------------------------------------------------
-// Autômato de Pilha — 7-tupla formal com aceitação exclusiva por pilha vazia.
-// -----------------------------------------------------------------------------
+
 public sealed class AutomatoDePilha
 {
-    // ── 7-tupla formal ─────────────────────────────────────────────────────
+    
 
     /// <summary>Q — conjunto finito de estados (FrozenSet para lookup O(1) imutável).</summary>
     public FrozenSet<string> Q { get; }
@@ -80,12 +55,12 @@ public sealed class AutomatoDePilha
     /// <summary>Z0 — símbolo inicial da pilha.</summary>
     public char Z0 { get; }
 
-    // F = ∅ — sem estados de aceitação; verificar estado final seria erro conceitual.
+    
 
     /// <summary>Rótulo descritivo para exibição.</summary>
     public string Nome { get; }
 
-    // ── Construtor ──────────────────────────────────────────────────────────
+    
     public AutomatoDePilha(
         HashSet<string> q,
         HashSet<char> sigma,
@@ -101,7 +76,7 @@ public sealed class AutomatoDePilha
         ArgumentNullException.ThrowIfNull(delta);
         ArgumentException.ThrowIfNullOrWhiteSpace(q0);
 
-        // Converte para FrozenSet / FrozenDictionary para leitura de alta performance.
+        
         Q     = q.ToFrozenSet();
         Sigma = sigma.ToFrozenSet();
         Gamma = gamma.ToFrozenSet();
@@ -111,7 +86,7 @@ public sealed class AutomatoDePilha
         Nome  = nome;
     }
 
-    // ── Simulação ───────────────────────────────────────────────────────────
+    
 
     /// <summary>
     /// Simula o AP sobre <paramref name="cadeia"/>, exibindo cada configuração
@@ -143,16 +118,15 @@ public sealed class AutomatoDePilha
         return aceita;
     }
 
-    // Busca em profundidade (DFS) não-determinística.
-    // Retorna true ao encontrar o primeiro ramo que aceita.
+    
     private bool BuscaDFS(Configuracao cfg, int passo)
     {
-        const int MaxPassos = 200; // guarda contra loops com λ-movimentos
+        const int MaxPassos = 200; 
         if (passo > MaxPassos) return false;
 
         ExibirConfiguracao(cfg, passo);
 
-        // ── Critério de aceitação: entrada esgotada E pilha vazia ───────────
+      
         if (cfg.EntradaRestante.Length == 0 && cfg.Pilha.Count == 0)
             return true;
 
@@ -160,7 +134,7 @@ public sealed class AutomatoDePilha
 
         char topo = cfg.Pilha.Peek();
 
-        // ── 1. λ-movimentos (ε-transições) ──────────────────────────────────
+        
         if (Delta.TryGetValue(new ChaveTransicao(cfg.Estado, '\0', topo), out List<DestinoTransicao>? epsDestinos))
         {
             foreach (DestinoTransicao dest in epsDestinos)
@@ -172,17 +146,16 @@ public sealed class AutomatoDePilha
             }
         }
 
-        // ── 2. Transições que consomem símbolo ──────────────────────────────
+      
         if (cfg.EntradaRestante.Length == 0) return false;
 
         char sim = cfg.EntradaRestante[0];
         if (!Sigma.Contains(sim)) return false; // símbolo fora de Σ
 
         if (!Delta.TryGetValue(new ChaveTransicao(cfg.Estado, sim, topo), out List<DestinoTransicao>? destinos))
-            return false; // transição indefinida → ramo morto
+            return false; 
 
-        // Range index: EntradaRestante[1..] equivale a Substring(1) mas sem alocação
-        // quando o compilador/JIT pode otimizar (string continua imutável em .NET 8).
+       
         string resto = cfg.EntradaRestante[1..];
 
         foreach (DestinoTransicao dest in destinos)
@@ -206,13 +179,13 @@ public sealed class AutomatoDePilha
     private static void AplicarTransicao(Stack<char> pilha, string empilhar)
     {
         pilha.Pop();
-        // Itera sobre ReadOnlySpan<char> — sem alocação de enumerador (.NET 8)
+      
         ReadOnlySpan<char> span = empilhar.AsSpan();
         for (int i = span.Length - 1; i >= 0; i--)
             pilha.Push(span[i]);
     }
 
-    // ── Exibição da configuração instantânea ────────────────────────────────
+    
     private static void ExibirConfiguracao(Configuracao cfg, int passo)
     {
         string entrada = cfg.EntradaRestante.Length > 0
@@ -235,7 +208,7 @@ public sealed class AutomatoDePilha
         Console.WriteLine();
     }
 
-    // ── Exibição da definição formal ─────────────────────────────────────────
+   
     public void ExibirDefinicaoFormal()
     {
         Console.ForegroundColor = ConsoleColor.Yellow;

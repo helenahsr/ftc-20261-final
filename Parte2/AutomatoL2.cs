@@ -1,21 +1,4 @@
-// =============================================================================
-// AutomatoL2.cs  (.NET 8 / C# 12)
-// Fábrica do AP para L2 = { aⁿbⁿ | n ≥ 1 }
-//
-// Estratégia:
-//   Fase 1 (q0): a cada 'a' lido, empilha 'A' sobre Z0.
-//   Fase 2 (q1): a cada 'b' lido, desempilha 'A'.
-//   Transição q0→q1 ocorre ao ler o primeiro 'b'.
-//   λ-movimento final em q1 remove Z0 → pilha vazia → ACEITA.
-//
-// Definição formal:
-//   Q  = { q0, q1 }   Σ = { a, b }   Γ = { A, Z }
-//   δ(q0, a, Z) = (q0, AZ)
-//   δ(q0, a, A) = (q0, AA)
-//   δ(q0, b, A) = (q1, ε)
-//   δ(q1, b, A) = (q1, ε)
-//   δ(q1, ε, Z) = (q1, ε)
-// =============================================================================
+
 
 namespace AutomatoDePilha;
 
