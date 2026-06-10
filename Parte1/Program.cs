@@ -1,4 +1,4 @@
-﻿// Q — conjunto de estados
+﻿/* Q — conjunto de estados. usei HashSet porque não permite estados duplicados*/
 HashSet<string> Q = new() { "q0", "q1", "q2" };
 
 // Sigma — alfabeto
@@ -20,3 +20,23 @@ Dictionary<(string estado, char simbolo), string> delta = new()
     { ("q2", 'a'), "q1" },
     { ("q2", 'b'), "q0" },
 };
+
+bool Aceitar(string cadeia, out List<string> rastro)
+{
+    string estado = q0;
+    rastro = new List<string> { estado };
+
+    foreach (char simbolo in cadeia)
+    {
+        if (!Sigma.Contains(simbolo))
+        {
+            Console.WriteLine($"Erro: Símbolo '{simbolo}' não pertence ao alfabeto.");
+            return false;
+        }
+
+        estado = delta[(estado, simbolo)];
+        rastro.Add(estado);
+    }
+
+    return F.Contains(estado);
+}
