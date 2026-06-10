@@ -1,14 +1,4 @@
-﻿// =============================================================================
-// Program.cs  (.NET 8 / C# 12)
-// Trabalho Final — Fundamentos Teóricos da Computação — Faculdade Cotemig
-// Parte 2 — Autômato de Pilha (AP) com Reconhecimento por Pilha Vazia
-//
-// Linguagens:
-//   L2 = { aⁿbⁿ | n ≥ 1 }
-//   L3 = { w ∈ {a,b}* | w = wᴿ, |w| ≥ 1 }  (palíndromos)
-//
-// Top-level statements (C# 9+): sem classe Program explícita.
-// =============================================================================
+﻿
 
 using AutomatoDePilha;
 
@@ -109,7 +99,7 @@ static void ExibirCabecalho()
     Console.ForegroundColor = ConsoleColor.Yellow;
     Console.WriteLine("================================================================");
     Console.WriteLine("  Faculdade Cotemig — Fundamentos Teóricos da Computação");
-    Console.WriteLine("  Trabalho Final — Parte 2: Autômato de Pilha  (.NET 8)");
+    Console.WriteLine("  Trabalho Final — Parte 2: Autômato de Pilha");
     Console.WriteLine("================================================================");
     Console.ResetColor();
     Console.WriteLine();
