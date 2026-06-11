@@ -90,7 +90,7 @@ dotnet run
 
 ## Vídeo de Defesa
 
-> Link do vídeo: _await_
+> Link do vídeo: [Vídeo do Trabalho Final de FTC](https://www.youtube.com/watch?v=YGsC5LCzLU0)
 
 ---
 
